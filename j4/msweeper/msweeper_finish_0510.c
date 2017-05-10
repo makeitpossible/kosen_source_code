@@ -151,7 +151,7 @@ void display_map(int col,int row,int M, BLOCK map[col][row]){
 	}
       }
       else if(map[i][j].flag == 1){
-	attron(WA_PROTECT|COLOR_PAIR(3));
+	attron(COLOR_PAIR(3));
 	addch('?');
       }
       else{
