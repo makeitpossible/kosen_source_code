@@ -1,0 +1,94 @@
+<html>
+  <head>
+    <title >Tunnel through Earth</title>
+    <meta name="viewport" content="initial-scale=1.0">
+    <meta charset="utf-8">
+  </head>
+  <body>
+    <H1 align = "center"> Travel through Earth </h1>
+    <h3  align = "center">もし地球の裏までトンネルを掘ったら出口はどこかというアイディアで作りました。左側地図で出発位置変えると右側地図で出口位置を表示する </h3>
+    <div id="map" style ="left: 100px; width:600px; height:480px; float: left"></div>
+    <div id="map_2" style ="left: 200px; width:600px; height:480px"></div>
+    <script src="https://maps.googleapis.com/maps/api/js?sensor=false" type="text/javascript"></script>
+  <script>
+
+    var latlng = {lat: 36.208823, lng: 138.251953};
+    var latlng_2 = {lat: -36.208823, lng: -41.74805};
+    
+    var map,map2;
+    var marker,marker_2;
+    var popup = null,popup_2 = null;
+    
+    function initMap() {
+      /* creat map */
+      
+      map = new google.maps.Map(document.getElementById('map'), {
+        center: latlng,
+        zoom: 5
+      });
+    
+      /* creat map 2 */
+      map2 = new google.maps.Map(document.getElementById('map_2'), {
+        center: latlng_2,
+        zoom: 5
+      });
+      
+      /* creat marker for map */
+      marker = new google.maps.Marker({
+        position: latlng,
+        map: map,
+        draggable: true,
+        title: 'You go from here !',
+        label: 'A'
+      });
+
+      /* creat marker for map 2 */
+      marker_2 = new google.maps.Marker({
+        position: latlng_2,
+        map: map2,
+        title: 'You will come out here',
+        label: 'B'
+      });
+      
+      marker.setMap(map);
+      
+      /* action when marker is changed */
+      marker.addListener('dragend',function() {
+        map.setCenter(marker.getPosition());
+        latlng = marker.getPosition() ;
+        
+        var new_lat = -1*latlng.lat();
+        var new_lng = (latlng.lng() < 0) ? (latlng.lng()+180):(latlng.lng()-180);
+        latlng_2 = new google.maps.LatLng(new_lat,new_lng);
+        moveMap(map2,marker_2,latlng_2);
+      
+        /* display popup info */
+        if(popup){
+          popup.close();
+        }
+        popup = new google.maps.InfoWindow({
+          content: "Start point:<br/>"+"Lat:"+latlng.lat()+"<br/>Lng:"+latlng.lng()
+        });
+        popup.open(marker.get('map'),marker);
+        
+        /* display popup 2 */
+        if(popup_2){
+          popup_2.close();
+        }
+        popup_2 = new google.maps.InfoWindow({
+          content: "End point:<br/>"+"Lat:"+latlng_2.lat()+"<br/>Lng:"+latlng_2.lng()
+        });
+        popup_2.open(marker_2.get('map2'),marker_2);
+      });
+    
+      /* change marker 2 position */
+      function moveMap(map2, marker_2,latlng_2){
+        marker_2.setPosition(latlng_2);
+        map2.setCenter(marker_2.getPosition());
+      }
+    }  
+    initMap();
+        
+  </script>
+  </body>
+</html>
